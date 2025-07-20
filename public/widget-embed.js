@@ -19,13 +19,14 @@
         constructor(options) {
             this.container = document.getElementById(options.container);
             this.testimonials = options.testimonials || [];
-            this.showNavigation = options.showNavigation || false;
-            this.showPagination = options.showPagination || false;
+            this.showNavigation = options.showNavigation !== false; // Default to true
+            this.showPagination = options.showPagination !== false; // Default to true
             this.autoSlide = options.autoSlide || false;
             this.slideInterval = options.slideInterval || 5000;
             this.currentIndex = 0;
             this.intervalId = null;
             this.embedCache = new Map(); // Cache for oEmbed responses
+            this.testimonialsPerPage = 3; // Default, will be updated based on screen size
 
             this.init();
         }
@@ -35,6 +36,10 @@
                 console.error('Container not found');
                 return;
             }
+
+            // Set up responsive behavior
+            this.updateLayout();
+            window.addEventListener('resize', () => this.updateLayout());
 
             // Check if we have any Twitter embeds and fetch their HTML
             const hasEmbeds = this.testimonials.some(t => t.isEmbed);
@@ -48,8 +53,32 @@
 
             this.render();
             
-            if (this.autoSlide && this.testimonials.length > 1) {
+            if (this.autoSlide && this.testimonials.length > this.testimonialsPerPage) {
                 this.startAutoSlide();
+            }
+        }
+
+        updateLayout() {
+            const width = window.innerWidth;
+            const oldTestimonialsPerPage = this.testimonialsPerPage;
+            
+            if (width < 768) {
+                this.testimonialsPerPage = 1; // Mobile: 1 per page
+            } else if (width < 1024) {
+                this.testimonialsPerPage = 2; // Tablet: 2 per page
+            } else {
+                this.testimonialsPerPage = 3; // Desktop: 3 per page
+            }
+            
+            // Update current index if it's out of bounds
+            const totalPages = Math.ceil(this.testimonials.length / this.testimonialsPerPage);
+            if (this.currentIndex >= totalPages) {
+                this.currentIndex = Math.max(0, totalPages - 1);
+            }
+            
+            // Re-render if layout changed
+            if (oldTestimonialsPerPage !== this.testimonialsPerPage) {
+                this.render();
             }
         }
 
@@ -140,7 +169,12 @@
                 return;
             }
 
-            const testimonialsHTML = this.testimonials.map((testimonial, index) => {
+            const totalPages = Math.ceil(this.testimonials.length / this.testimonialsPerPage);
+            const startIndex = this.currentIndex * this.testimonialsPerPage;
+            const endIndex = Math.min(startIndex + this.testimonialsPerPage, this.testimonials.length);
+            const currentTestimonials = this.testimonials.slice(startIndex, endIndex);
+
+            const testimonialsHTML = currentTestimonials.map((testimonial, index) => {
                 if (testimonial.isEmbed) {
                     // Render Twitter embed using oEmbed HTML - no custom styling since Twitter provides its own
                     const cachedEmbed = this.embedCache.get(testimonial.originalUrl);
@@ -222,14 +256,17 @@
             }).join('');
 
             this.container.innerHTML = `
-                <div class="max-w-6xl mx-auto px-4">
-                    ${this.showNavigation ? this.renderNavigation() : ''}
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        ${testimonialsHTML}
+                <div class="max-w-4xl mx-auto px-4">
+                    <div class="relative">
+                        ${this.showNavigation && this.testimonials.length > this.testimonialsPerPage ? this.renderNavigation(totalPages) : ''}
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px]">
+                            ${testimonialsHTML}
+                        </div>
                     </div>
                     
-                    ${this.showPagination ? this.renderPagination() : ''}
+                    ${this.showNavigation && totalPages > 1 ? this.renderPagination(totalPages) : ''}
+                    ${this.showNavigation && totalPages > 1 ? this.renderPageInfo(totalPages) : ''}
                 </div>
                 
                 <style>
@@ -250,10 +287,35 @@
 
             // Process Twitter embeds (oEmbed HTML already includes the widgets script)
             if (window.twttr && window.twttr.widgets) {
-                window.twttr.widgets.load();
+                // Multiple attempts to ensure widgets load properly after rendering
+                setTimeout(() => window.twttr.widgets.load(), 50);
+                setTimeout(() => window.twttr.widgets.load(), 200);
+                setTimeout(() => window.twttr.widgets.load(), 400);
             }
 
             this.attachEventListeners();
+        }
+
+        // Method to refresh Twitter widgets
+        refreshTwitterWidgets() {
+            if (window.twttr && window.twttr.widgets) {
+                // Multiple loading attempts for better reliability
+                setTimeout(() => window.twttr.widgets.load(), 50);
+                setTimeout(() => window.twttr.widgets.load(), 200);
+                setTimeout(() => window.twttr.widgets.load(), 400);
+            }
+        }
+
+        // Method to update testimonials and re-render
+        updateTestimonials(newTestimonials) {
+            this.testimonials = newTestimonials;
+            this.updateLayout();
+            this.render();
+            
+            // Refresh Twitter widgets after a short delay
+            setTimeout(() => {
+                this.refreshTwitterWidgets();
+            }, 200);
         }
 
         renderStars(rating) {
@@ -267,43 +329,53 @@
             }).join('');
         }
 
-        renderNavigation() {
+        renderNavigation(totalPages) {
             return `
-                <div class="flex justify-between items-center mb-6">
-                    <button 
-                        id="prev-btn" 
-                        class="p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow"
-                    >
-                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    <button 
-                        id="next-btn" 
-                        class="p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow"
-                    >
-                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
+                <button 
+                    id="prev-btn" 
+                    class="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-white shadow-lg hover:shadow-xl border border-gray-200 transition-all duration-200 hover:scale-105 -ml-6"
+                    aria-label="Previous testimonials"
+                >
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                
+                <button 
+                    id="next-btn" 
+                    class="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-white shadow-lg hover:shadow-xl border border-gray-200 transition-all duration-200 hover:scale-105 -mr-6"
+                    aria-label="Next testimonials"
+                >
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            `;
+        }
+
+        renderPagination(totalPages) {
+            return `
+                <div class="flex justify-center mt-8 space-x-2">
+                    ${Array.from({ length: totalPages }, (_, i) => {
+                        const active = i === this.currentIndex;
+                        return `
+                            <button 
+                                class="w-2 h-2 rounded-full transition-all duration-200 pagination-dot ${active ? 'bg-indigo-600 w-6' : 'bg-gray-300 hover:bg-gray-400'}"
+                                data-page="${i}"
+                                aria-label="Go to page ${i + 1}"
+                            ></button>
+                        `;
+                    }).join('')}
                 </div>
             `;
         }
 
-        renderPagination() {
-            const dots = Array.from({ length: this.testimonials.length }, (_, i) => {
-                const active = i === this.currentIndex;
-                return `
-                    <button 
-                        class="w-3 h-3 rounded-full ${active ? 'bg-indigo-600' : 'bg-gray-300'} transition-colors"
-                        data-index="${i}"
-                    ></button>
-                `;
-            }).join('');
-
+        renderPageInfo(totalPages) {
             return `
-                <div class="flex justify-center mt-8 space-x-2">
-                    ${dots}
+                <div class="flex justify-center mt-4">
+                    <div class="text-sm text-gray-500">
+                        Page ${this.currentIndex + 1} of ${totalPages} (${this.testimonials.length} testimonials)
+                    </div>
                 </div>
             `;
         }
@@ -322,28 +394,48 @@
             }
 
             // Pagination dots
-            const paginationBtns = this.container.querySelectorAll('[data-index]');
+            const paginationBtns = this.container.querySelectorAll('[data-page]');
             paginationBtns.forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    const index = parseInt(e.target.dataset.index);
+                    const index = parseInt(e.target.dataset.page);
                     this.goToSlide(index);
                 });
             });
         }
 
         nextSlide() {
-            this.currentIndex = (this.currentIndex + 1) % this.testimonials.length;
+            const totalPages = Math.ceil(this.testimonials.length / this.testimonialsPerPage);
+            this.currentIndex = (this.currentIndex + 1) % totalPages;
             this.render();
+            
+            // Reload Twitter widgets after navigation
+            setTimeout(() => {
+                this.refreshTwitterWidgets();
+            }, 100);
         }
 
         previousSlide() {
-            this.currentIndex = (this.currentIndex - 1 + this.testimonials.length) % this.testimonials.length;
+            const totalPages = Math.ceil(this.testimonials.length / this.testimonialsPerPage);
+            this.currentIndex = (this.currentIndex - 1 + totalPages) % totalPages;
             this.render();
+            
+            // Reload Twitter widgets after navigation
+            setTimeout(() => {
+                this.refreshTwitterWidgets();
+            }, 100);
         }
 
         goToSlide(index) {
-            this.currentIndex = index;
-            this.render();
+            const totalPages = Math.ceil(this.testimonials.length / this.testimonialsPerPage);
+            if (index >= 0 && index < totalPages) {
+                this.currentIndex = index;
+                this.render();
+                
+                // Reload Twitter widgets after navigation
+                setTimeout(() => {
+                    this.refreshTwitterWidgets();
+                }, 100);
+            }
         }
 
         startAutoSlide() {
