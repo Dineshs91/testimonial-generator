@@ -142,11 +142,11 @@
 
             const testimonialsHTML = this.testimonials.map((testimonial, index) => {
                 if (testimonial.isEmbed) {
-                    // Render Twitter embed using oEmbed HTML
+                    // Render Twitter embed using oEmbed HTML - no custom styling since Twitter provides its own
                     const cachedEmbed = this.embedCache.get(testimonial.originalUrl);
                     if (cachedEmbed) {
                         return `
-                            <div class="twitter-embed-wrapper">
+                            <div class="twitter-embed-container">
                                 ${cachedEmbed}
                             </div>
                         `;
@@ -233,30 +233,17 @@
                 </div>
                 
                 <style>
-                    .twitter-embed-wrapper {
-                        display: flex;
-                        align-items: stretch;
-                        min-height: 400px;
+                    .twitter-embed-container {
+                        display: contents;
                     }
                     
-                    .twitter-embed-wrapper blockquote {
+                    .twitter-embed-container blockquote {
                         margin: 0 !important;
-                        flex: 1;
-                        display: flex;
-                        flex-direction: column;
                     }
                     
-                    .twitter-embed-wrapper iframe {
-                        flex: 1;
-                        min-height: 400px;
-                        border-radius: 0.5rem;
-                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-                        border: 1px solid rgba(229, 231, 235, 1);
-                    }
-                    
-                    .twitter-embed-wrapper:hover iframe {
-                        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-                        transition: box-shadow 0.3s ease;
+                    .twitter-embed-container iframe {
+                        max-width: 100% !important;
+                        margin: 0 !important;
                     }
                 </style>
             `;

@@ -92,93 +92,79 @@ export default function TestimonialWidget({ testimonials, showNavigation = false
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {testimonials.map((testimonial) => (
-          <div
-            key={testimonial.id}
-            className={`bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow duration-300 ${
-              testimonial.isEmbed ? 'min-h-[400px] !p-0' : ''
-            }`}
-          >
-            {testimonial.isEmbed ? (
-              // For Twitter embeds, show the full embed from oEmbed API
-              <div className="twitter-embed-wrapper">
-                <div 
-                  dangerouslySetInnerHTML={{ __html: testimonial.content }}
-                  className="w-full"
+          testimonial.isEmbed ? (
+            // For Twitter embeds, render without any wrapper styling since they have their own
+            <div
+              key={testimonial.id}
+              className="twitter-embed-container"
+            >
+              <div 
+                dangerouslySetInnerHTML={{ __html: testimonial.content }}
+                className="w-full"
+              />
+            </div>
+          ) : (
+            // Regular testimonial with full styling
+            <div
+              key={testimonial.id}
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow duration-300"
+            >
+              <div className="flex items-center mb-4">
+                <img
+                  src={testimonial.avatar}
+                  alt={testimonial.name}
+                  className="w-12 h-12 rounded-full mr-4 object-cover border-2 border-gray-100 dark:border-gray-600"
                 />
+                <div className="flex-1">
+                  <h4 className="font-semibold text-gray-900 dark:text-white text-sm">
+                    {testimonial.name}
+                  </h4>
+                  {testimonial.title && (
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {testimonial.title}
+                    </p>
+                  )}
+                  {testimonial.handle && (
+                    <p className="text-sm text-gray-500 dark:text-gray-500">
+                      {testimonial.handle}
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center">
+                  {getPlatformIcon(testimonial.platform)}
+                </div>
               </div>
-            ) : (
-              // Regular testimonial layout
-              <>
-                <div className="flex items-center mb-4">
-                  <img
-                    src={testimonial.avatar}
-                    alt={testimonial.name}
-                    className="w-12 h-12 rounded-full mr-4 object-cover border-2 border-gray-100 dark:border-gray-600"
-                  />
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm">
-                      {testimonial.name}
-                    </h4>
-                    {testimonial.title && (
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {testimonial.title}
-                      </p>
-                    )}
-                    {testimonial.handle && (
-                      <p className="text-sm text-gray-500 dark:text-gray-500">
-                        {testimonial.handle}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex items-center">
-                    {getPlatformIcon(testimonial.platform)}
-                  </div>
+
+              {testimonial.rating && (
+                <div className="flex mb-3">
+                  {renderStars(testimonial.rating)}
                 </div>
+              )}
 
-                {testimonial.rating && (
-                  <div className="flex mb-3">
-                    {renderStars(testimonial.rating)}
-                  </div>
-                )}
+              <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-4 whitespace-pre-line">
+                {testimonial.content}
+              </p>
 
-                <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-4 whitespace-pre-line">
-                  {testimonial.content}
-                </p>
-
-                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                  <span>{testimonial.date}</span>
-                </div>
-              </>
-            )}
-          </div>
+              <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                <span>{testimonial.date}</span>
+              </div>
+            </div>
+          )
         ))}
       </div>
       
       <style jsx>{`
-        .twitter-embed-wrapper {
-          display: flex;
-          align-items: stretch;
-          min-height: 400px;
+        .twitter-embed-container {
+          display: contents;
         }
         
-        .twitter-embed-wrapper :global(blockquote) {
+        .twitter-embed-container :global(blockquote) {
           margin: 0 !important;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
         }
         
-        .twitter-embed-wrapper :global(iframe) {
-          flex: 1;
-          min-height: 400px;
-          border-radius: 0.5rem;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-          border: 1px solid rgba(229, 231, 235, 1);
-        }
-        
-        .twitter-embed-wrapper:hover :global(iframe) {
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-          transition: box-shadow 0.3s ease;
+        .twitter-embed-container :global(iframe) {
+          max-width: 100% !important;
+          margin: 0 !important;
         }
       `}</style>
     </div>
