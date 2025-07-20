@@ -191,7 +191,7 @@ export default function EditWidgetPage() {
               Widget Not Found
             </h1>
             <p className="text-gray-600 dark:text-gray-300 mb-8">
-              The widget you're looking for doesn't exist or may have been deleted.
+              The widget you&apos;re looking for doesn&apos;t exist or may have been deleted.
             </p>
             <button
               onClick={() => router.push('/')}
@@ -247,7 +247,7 @@ export default function EditWidgetPage() {
                   Widget Settings
                 </h2>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Configure your widget's name and display options
+                  Configure your widget&apos;s name and display options
                 </p>
               </div>
 
@@ -456,7 +456,7 @@ export default function EditWidgetPage() {
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <label htmlFor="url" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Add Twitter/X Post to "{widget?.name}"
+                    Add Twitter/X Post to &quot;{widget?.name}&quot;
                   </label>
                   <span className="px-2 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-xs rounded-full">
                     {widget?.testimonials.length || 0} testimonials
@@ -541,7 +541,7 @@ export default function EditWidgetPage() {
             <div className="mb-8">
               <div className="flex items-center justify-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  Widget Preview: "{widget.name}"
+                  Widget Preview: &quot;{widget.name}&quot;
                 </h2>
               </div>
               
@@ -575,10 +575,10 @@ export default function EditWidgetPage() {
             <div className="max-w-4xl mx-auto">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                  🚀 Embed Code for "{widget.name}"
+                  🚀 Embed Code for &quot;{widget.name}&quot;
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                  Copy this HTML code to embed <strong>"{widget.name}"</strong> on your website:
+                  Copy this HTML code to embed <strong>&quot;{widget.name}&quot;</strong> on your website:
                 </p>
                 <div className="bg-gray-50 dark:bg-gray-900 rounded-md p-4 overflow-x-auto">
                   <pre className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">

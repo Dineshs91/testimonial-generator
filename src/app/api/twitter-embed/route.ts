@@ -50,7 +50,8 @@ export async function POST(request: NextRequest) {
 }
 
 // Allow CORS for the widget
-export async function OPTIONS(request: NextRequest) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function OPTIONS(_request: NextRequest) {
   return new NextResponse(null, {
     status: 200,
     headers: {

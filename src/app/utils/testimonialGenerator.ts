@@ -209,8 +209,8 @@ export function getEmbedInstructions(): string {
 
 4. **Widget API Endpoint**:
    POST /api/twitter-embed
-   Body: { "tweetUrl": "https://twitter.com/..." }
-   Response: { "html": "<blockquote>...</blockquote>" }
+   Body: { &quot;tweetUrl&quot;: &quot;https://twitter.com/...&quot; }
+   Response: { &quot;html&quot;: &quot;&lt;blockquote&gt;...&lt;/blockquote&gt;&quot; }
 
 This approach ensures reliable, compliant Twitter embeds without CORS limitations!
 `;
@@ -219,6 +219,10 @@ This approach ensures reliable, compliant Twitter embeds without CORS limitation
 // Declare global twttr for TypeScript
 declare global {
   interface Window {
-    twttr: any;
+    twttr: {
+      widgets: {
+        load: () => void;
+      };
+    };
   }
 } 

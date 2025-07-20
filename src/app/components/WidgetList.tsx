@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Trash2, Plus, Edit3, ExternalLink } from "lucide-react";
 import type { Widget } from "../types/widget";
 import { getWidgets, deleteWidget } from "../utils/storage";
@@ -174,9 +175,11 @@ export default function WidgetList({
                 <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
                   <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">Latest testimonial:</div>
                   <div className="flex items-center gap-2">
-                    <img
+                    <Image
                       src={widget.testimonials[0].avatar}
                       alt={widget.testimonials[0].name}
+                      width={24}
+                      height={24}
                       className="w-6 h-6 rounded-full"
                     />
                     <div className="flex-1 min-w-0">

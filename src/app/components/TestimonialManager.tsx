@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Trash2, Edit3, Save, X, ExternalLink } from "lucide-react";
 import type { Testimonial } from "../types/testimonial";
 import type { Widget } from "../types/widget";
@@ -42,7 +43,8 @@ export default function TestimonialManager({ widget, onTestimonialUpdate }: Test
     setEditFormData({});
   };
 
-  const handleSaveEdit = (testimonial: Testimonial) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleSaveEdit = (_testimonial: Testimonial) => {
     // For now, we'll just cancel editing since testimonial editing would need 
     // a more complex implementation with the storage layer
     // In a real app, you'd call updateTestimonialInWidget here
@@ -89,7 +91,7 @@ export default function TestimonialManager({ widget, onTestimonialUpdate }: Test
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-          Testimonials in "{widget.name}"
+          Testimonials in &quot;{widget.name}&quot;
         </h3>
         <div className="text-center py-8 text-gray-500 dark:text-gray-400">
           <p className="mb-2">No testimonials yet.</p>
@@ -103,7 +105,7 @@ export default function TestimonialManager({ widget, onTestimonialUpdate }: Test
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-          Testimonials in "{widget.name}"
+          Testimonials in &quot;{widget.name}&quot;
         </h3>
         <span className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-sm rounded-full">
           {widget.testimonials.length} testimonial{widget.testimonials.length !== 1 ? 's' : ''}
@@ -176,9 +178,11 @@ export default function TestimonialManager({ widget, onTestimonialUpdate }: Test
               <div>
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center">
-                    <img
+                    <Image
                       src={testimonial.avatar}
                       alt={testimonial.name}
+                      width={40}
+                      height={40}
                       className="w-10 h-10 rounded-full mr-3 object-cover border-2 border-gray-100 dark:border-gray-600"
                     />
                     <div>

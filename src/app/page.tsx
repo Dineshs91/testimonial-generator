@@ -100,7 +100,7 @@ export default function Home() {
                   Create Widget
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  Click "Create Widget" to set up a new testimonial widget with custom settings
+                  Click &quot;Create Widget&quot; to set up a new testimonial widget with custom settings
                 </p>
               </div>
 
@@ -123,7 +123,7 @@ export default function Home() {
                   <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">3</span>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                  Embed & Deploy
+                  Embed &amp; Deploy
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 text-sm">
                   Copy the generated embed code and paste it into your website to display testimonials

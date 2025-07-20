@@ -1,4 +1,5 @@
 import { useEffect, useState, memo, useMemo, useRef, useCallback } from "react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Testimonial } from "../types/testimonial";
 import { loadTwitterWidgets } from "../utils/testimonialGenerator";
@@ -12,6 +13,12 @@ const TestimonialWidget = memo(function TestimonialWidget({ testimonials, showNa
   const [currentIndex, setCurrentIndex] = useState(0);
   const [testimonialsPerPage, setTestimonialsPerPage] = useState(3);
   const loadingWidgets = useRef(false);
+
+  // Create a stable testimonial dependency
+  const testimonialIds = useMemo(() => 
+    testimonials.map(t => t.id).join(','), 
+    [testimonials]
+  );
 
   useEffect(() => {
     // Load Twitter widgets if there are any embeds
@@ -41,7 +48,7 @@ const TestimonialWidget = memo(function TestimonialWidget({ testimonials, showNa
         loadingWidgets.current = false;
       });
     }
-  }, [testimonials.length, testimonials.map(t => t.id).join(',')]); // Only re-run when testimonials actually change
+  }, [testimonials, testimonialIds]); // Include both testimonials and testimonialIds
 
   // Reload Twitter widgets when navigation changes
   useEffect(() => {
@@ -53,7 +60,7 @@ const TestimonialWidget = memo(function TestimonialWidget({ testimonials, showNa
       
       return () => clearTimeout(timer);
     }
-  }, [currentIndex, testimonialsPerPage]);
+  }, [currentIndex, testimonialsPerPage, testimonials]);
 
   useEffect(() => {
     // Update testimonials per page based on screen size
@@ -83,7 +90,7 @@ const TestimonialWidget = memo(function TestimonialWidget({ testimonials, showNa
         setTimeout(() => window.twttr.widgets.load(), 400);
       }
     }
-  }, [testimonials, currentIndex]);
+  }, [testimonials]);
 
   const totalPages = Math.ceil(testimonials.length / testimonialsPerPage);
   const startIndex = currentIndex * testimonialsPerPage;
@@ -236,9 +243,11 @@ const TestimonialWidget = memo(function TestimonialWidget({ testimonials, showNa
                 className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow duration-300"
               >
                 <div className="flex items-center mb-4">
-                  <img
+                  <Image
                     src={testimonial.avatar}
                     alt={testimonial.name}
+                    width={48}
+                    height={48}
                     className="w-12 h-12 rounded-full mr-4 object-cover border-2 border-gray-100 dark:border-gray-600"
                   />
                   <div className="flex-1">
