@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testimonial Widget - Usage Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8fafc;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2 { color: #1f2937; }
+        code {
+            background: #f1f5f9;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        .demo-section {
+            border: 2px dashed #d1d5db;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            background: #f9fafb;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .feature-card {
+            background: #f0f9ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #0ea5e9;
+        }
+        .method-card {
+            background: #f0fdf4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #22c55e;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Testimonial Widget - Implementation Guide</h1>
+        <p>Transform your Twitter/X posts into beautiful testimonial widgets for your website. This guide shows you multiple ways to integrate our testimonial widget.</p>
+    </div>
+
+    <div class="container">
+        <h2>🚀 Quick Start</h2>
+        <p>The easiest way to add testimonials to your website:</p>
+
+        <div class="method-card">
+            <h3>Method 1: Simple Embed</h3>
+            <p>Add this to your HTML:</p>
+            <pre><code>&lt;!-- Include Tailwind CSS and widget script --&gt;
+&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;
+&lt;script src="https://your-domain.com/widget-embed.js"&gt;&lt;/script&gt;
+
+&lt;!-- Create container with testimonial data --&gt;
+&lt;div id="my-testimonials" data-testimonials='{
+    "testimonials": [
+        {
+            "id": "1",
+            "name": "John Doe",
+            "title": "CEO at TechCorp",
+            "avatar": "https://example.com/avatar.jpg",
+            "content": "This tool is amazing! Highly recommend.",
+            "rating": 5,
+            "date": "Jan 15, 2024",
+            "platform": "twitter"
+        }
+    ],
+    "showNavigation": true,
+    "autoSlide": true
+}'&gt;&lt;/div&gt;</code></pre>
+        </div>
+
+        <div class="method-card">
+            <h3>Method 2: JavaScript Initialization</h3>
+            <p>For more control over the widget:</p>
+            <pre><code>&lt;!-- Include Tailwind CSS and widget script --&gt;
+&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;
+&lt;script src="https://your-domain.com/widget-embed.js"&gt;&lt;/script&gt;
+
+&lt;!-- Create empty container --&gt;
+&lt;div id="testimonial-widget"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+// Initialize widget with custom config
+const widget = new TestimonialWidget({
+    container: 'testimonial-widget',
+    testimonials: [
+        // Your testimonial data here
+    ],
+    showNavigation: true,
+    showPagination: true,
+    autoSlide: true,
+    slideInterval: 5000,
+    testimonialsPerPage: 3
+});
+&lt;/script&gt;</code></pre>
+        </div>
+
+        <div class="method-card">
+            <h3>Method 3: Load from API</h3>
+            <p>Dynamically load testimonials from your server:</p>
+            <pre><code>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;
+&lt;script src="https://your-domain.com/widget-embed.js"&gt;&lt;/script&gt;
+
+&lt;div id="testimonial-widget"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+const widget = new TestimonialWidget({
+    container: 'testimonial-widget',
+    apiUrl: 'https://your-api.com/testimonials',
+    showNavigation: true,
+    autoSlide: true
+});
+&lt;/script&gt;</code></pre>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>⚙️ Configuration Options</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>container</h4>
+                <p>ID of the HTML element where the widget will be rendered</p>
+                <code>Default: 'testimonial-widget'</code>
+            </div>
+            <div class="feature-card">
+                <h4>testimonials</h4>
+                <p>Array of testimonial objects to display</p>
+                <code>Default: []</code>
+            </div>
+            <div class="feature-card">
+                <h4>showNavigation</h4>
+                <p>Show previous/next navigation buttons</p>
+                <code>Default: true</code>
+            </div>
+            <div class="feature-card">
+                <h4>showPagination</h4>
+                <p>Show pagination dots at the bottom</p>
+                <code>Default: true</code>
+            </div>
+            <div class="feature-card">
+                <h4>autoSlide</h4>
+                <p>Automatically advance slides</p>
+                <code>Default: true</code>
+            </div>
+            <div class="feature-card">
+                <h4>slideInterval</h4>
+                <p>Time between auto-slides (milliseconds)</p>
+                <code>Default: 5000</code>
+            </div>
+            <div class="feature-card">
+                <h4>testimonialsPerPage</h4>
+                <p>Number of testimonials to show per page</p>
+                <code>Default: 3</code>
+            </div>
+            <div class="feature-card">
+                <h4>apiUrl</h4>
+                <p>URL to fetch testimonials dynamically</p>
+                <code>Default: null</code>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📋 Testimonial Data Format</h2>
+        <p>Each testimonial should follow this structure:</p>
+        <pre><code>{
+    "id": "unique-identifier",
+    "name": "Customer Name",
+    "title": "Job Title (optional)",
+    "handle": "@twitter_handle (optional)",
+    "avatar": "https://example.com/avatar.jpg",
+    "content": "The testimonial text content",
+    "rating": 5, // 1-5 stars (optional)
+    "date": "Jan 15, 2024",
+    "platform": "twitter" // twitter, slack, linkedin, other
+}</code></pre>
+    </div>
+
+    <div class="container">
+        <h2>🎨 Styling & Customization</h2>
+        <p>The widget uses Tailwind CSS classes, which you can customize:</p>
+        <pre><code>/* Override default styles with your custom CSS */
+.testimonial-widget h2 {
+    @apply text-4xl text-purple-600;
+}
+
+/* Customize testimonial cards */
+.testimonial-card {
+    @apply bg-gradient-to-br from-blue-50 to-purple-50 border-purple-200;
+}
+
+/* Customize star colors */
+.star.text-yellow-400 {
+    @apply text-purple-400;
+}
+
+/* Customize navigation buttons */
+.testimonial-nav button {
+    @apply bg-purple-600 text-white hover:bg-purple-700;
+}</code></pre>
+    </div>
+
+    <div class="container">
+        <h2>🔧 JavaScript API</h2>
+        <p>Control the widget programmatically:</p>
+        <pre><code>// Get widget instance
+const widget = window.testimonialWidget;
+
+// Navigate slides
+widget.nextSlide();
+widget.previousSlide();
+widget.goToPage(2);
+
+// Update testimonials
+widget.updateTestimonials(newTestimonialsArray);
+
+// Control auto-sliding
+widget.stopAutoSlide();
+widget.startAutoSlide();</code></pre>
+    </div>
+
+    <div class="container">
+        <h2>📱 Responsive Design</h2>
+        <p>The widget automatically adapts to different screen sizes using Tailwind's responsive utilities:</p>
+        <ul>
+            <li><strong>Mobile:</strong> 1 testimonial per row (<code>grid-cols-1</code>)</li>
+            <li><strong>Tablet:</strong> 2 testimonials per row (<code>md:grid-cols-2</code>)</li>
+            <li><strong>Desktop:</strong> 3 testimonials per row (<code>lg:grid-cols-3</code>)</li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h2>💡 Tips & Best Practices</h2>
+        <ul>
+            <li>Keep testimonial content concise (under 200 characters works best)</li>
+            <li>Use high-quality avatar images (minimum 80x80 pixels)</li>
+            <li>Include customer titles/companies for credibility</li>
+            <li>Mix different platforms (Twitter, Slack, LinkedIn) for variety</li>
+            <li>Update testimonials regularly to keep content fresh</li>
+            <li>Consider using 4-5 star ratings (perfect scores can seem fake)</li>
+            <li>Test the widget on different screen sizes and devices</li>
+            <li>Ensure images load properly with proper fallbacks</li>
+        </ul>
+    </div>
+
+    <div class="demo-section">
+        <h2>🎬 Live Demo</h2>
+        <p>The widget will display a placeholder message when no testimonials are provided:</p>
+        <div id="demo-widget"></div>
+        <p class="mt-4 text-sm text-gray-600">
+            <strong>Note:</strong> Add your testimonial data to see the widget in action. 
+            You can use the testimonial generator app to create testimonials from Twitter/X posts.
+        </p>
+    </div>
+
+    <!-- Include the widget for demo -->
+    <script src="widget-embed.js"></script>
+    <script>
+        // Demo widget with no testimonials to show the placeholder
+        new TestimonialWidget({
+            container: 'demo-widget',
+            testimonials: [], // Empty array to demonstrate placeholder
+            showNavigation: true,
+            showPagination: true,
+            autoSlide: false
+        });
+    </script>
+</body>
+</html> 
